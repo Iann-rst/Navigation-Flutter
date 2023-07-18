@@ -14,13 +14,25 @@ class TwoPage extends StatelessWidget {
     var args = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       backgroundColor: Colors.blue.shade100,
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Voltar para page anterior: $args'),
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Voltar para page anterior: $args'),
+            ),
+          ),
+          Center(
+              child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/thirdPage');
+            },
+            child: const Text('Ir para a 3ª page'),
+          ))
+        ],
       ),
     );
   }

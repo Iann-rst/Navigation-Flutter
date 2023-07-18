@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navigation/pages/one_page.dart';
+import 'package:navigation/pages/third_page.dart';
 import 'package:navigation/pages/two_page.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (_) => const OnePage(),
         '/twoPage': (_) => const TwoPage(),
+        '/thirdPage': (_) => const ThirdPage(),
       },
     );
   }

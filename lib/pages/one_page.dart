@@ -6,13 +6,14 @@ class OnePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/twoPage', arguments: 'Home');
-        },
-        child: const Text('Ir para a segunda Page'),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/twoPage', arguments: 'Home');
+          },
+          child: const Text('Ir para a segunda Page'),
+        ),
       ),
-    ));
+    );
   }
 }

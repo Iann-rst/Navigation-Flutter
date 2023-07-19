@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navigation/pages/one_page.dart';
-import 'package:navigation/pages/third_page.dart';
-import 'package:navigation/pages/two_page.dart';
+import 'package:navigation/views/one_page.dart';
+import 'package:navigation/views/third_page.dart';
+import 'package:navigation/views/two_page.dart';
 
 void main() {
   runApp(const MainApp());

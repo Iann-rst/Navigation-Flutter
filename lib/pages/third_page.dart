@@ -1,6 +1,8 @@
-import 'dart:math';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:navigation/widgets/custom_button_widget.dart';
 
 class ThirdPage extends StatefulWidget {
@@ -13,12 +15,20 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage> {
   // Gerência de estado sem package (Nativa, com ValueNotifier)
 
-  ValueNotifier<int> valorAleatorio = ValueNotifier<int>(0);
+  ValueNotifier<List<Post>> posts = ValueNotifier<List<Post>>([]);
+  ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
 
-  random() async {
-    for (int i = 0; i < 10; i++) {
-      await Future.delayed(const Duration(seconds: 1));
-      valorAleatorio.value = Random().nextInt(1000);
+  callApi() async {
+    var client = http.Client();
+    try {
+      isLoading.value = true;
+      var response = await client
+          .get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+      var decodedResponse = jsonDecode(response.body) as List;
+      posts.value = decodedResponse.map((e) => Post.fromJson(e)).toList();
+    } finally {
+      client.close();
+      isLoading.value = false;
     }
   }
 
@@ -26,23 +36,58 @@ class _ThirdPageState extends State<ThirdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ValueListenableBuilder(
-              valueListenable: valorAleatorio,
-              builder: (_, value, __) => Text(
-                'Valor é: $value',
-                style: const TextStyle(fontSize: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: Listenable.merge([posts, isLoading]),
+                builder: (_, __) => isLoading.value
+                    ? const CircularProgressIndicator()
+                    : ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: posts.value.length,
+                        itemBuilder: (_, idx) => ListTile(
+                          title: Text(posts.value[idx].title),
+                        ),
+                      ),
               ),
-            ),
-            CustomButtonWidget(
-              onPressed: () => random(),
-              title: 'Custom Button',
-            ),
-          ],
+              CustomButtonWidget(
+                onPressed: () => callApi(),
+                title: 'Custom Button',
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+class Post {
+  final int userId;
+  final int id;
+  final String title;
+  final String body;
+
+  Post({
+    required this.userId,
+    required this.id,
+    required this.title,
+    required this.body,
+  });
+
+  factory Post.fromJson(Map json) {
+    return Post(
+        userId: json['userId'],
+        id: json['id'],
+        title: json['title'],
+        body: json['body']);
+  }
+
+  @override
+  String toString() {
+    return '{ id: $id, userId: $userId, title: $title, body: $body }';
   }
 }
